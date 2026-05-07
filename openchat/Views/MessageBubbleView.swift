@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import MarkdownUI
 
 struct MessageBubbleView: View {
     let message: ChatMessage
@@ -22,7 +23,7 @@ struct MessageBubbleView: View {
                         .foregroundStyle(.secondary)
                         .frame(width: 24, height: 24)
                         .background(.regularMaterial, in: Circle())
-                    bubble
+                    markdownBubble
                         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                         .foregroundStyle(.primary)
                     Spacer(minLength: 40)
@@ -60,6 +61,18 @@ struct MessageBubbleView: View {
             .padding(.vertical, 10)
             .frame(maxWidth: 320, alignment: .leading)
     }
+
+    private var markdownBubble: some View {
+        Markdown(message.content)
+            .markdownTextStyle(\.text) {
+                FontFamilyVariant(.normal)
+                FontSize(.em(1))
+            }
+            .textSelection(.enabled)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .frame(maxWidth: 320, alignment: .leading)
+    }
 }
 
 struct StreamingBubbleView: View {
@@ -77,10 +90,8 @@ struct StreamingBubbleView: View {
                 if content.isEmpty {
                     TypingIndicator()
                 } else {
-                    Text(content)
-                        .font(.body)
+                    Markdown(content)
                         .foregroundStyle(.primary)
-                        .multilineTextAlignment(.leading)
                 }
             }
             .padding(.horizontal, 14)
