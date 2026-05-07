@@ -41,7 +41,7 @@ struct OpenRouterService {
 
     private let baseURL = URL(string: "https://openrouter.ai/api/v1")!
     private let referer = "https://openchat.app"
-    private let appTitle = "openchat iOS"
+    private let appTitle = "OpenChat iOS"
 
     private func makeRequest(path: String, method: String = "GET", body: Data? = nil) throws -> URLRequest {
         let key = AppSettings.shared.apiKey
