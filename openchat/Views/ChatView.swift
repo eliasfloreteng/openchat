@@ -92,6 +92,11 @@ struct ChatView: View {
         .onDisappear {
             cancelStreaming()
         }
+        .task(id: conversation.id) {
+            if !isStreaming, conversation.orderedMessages.last?.role == .user {
+                startStreaming()
+            }
+        }
     }
 
     private func scrollToBottom(_ proxy: ScrollViewProxy) {
