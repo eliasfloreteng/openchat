@@ -7,48 +7,50 @@ struct MessageBubbleView: View {
     let onEdit: () -> Void
 
     var body: some View {
-        Group {
-            switch message.role {
-            case .user:
-                HStack {
-                    Spacer(minLength: 40)
-                    bubble
-                        .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                        .foregroundStyle(.white)
-                }
-            case .assistant:
-                HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "sparkles")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                        .frame(width: 24, height: 24)
-                        .background(.regularMaterial, in: Circle())
-                    markdownBubble
-                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                        .foregroundStyle(.primary)
-                    Spacer(minLength: 40)
-                }
-            case .system:
-                Text(message.content)
-                    .font(.footnote)
+        switch message.role {
+        case .user:
+            HStack {
+                Spacer(minLength: 40)
+                bubble
+                    .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .foregroundStyle(.white)
+                    .contextMenu { menuItems }
+            }
+        case .assistant:
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "sparkles")
+                    .font(.callout)
                     .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 4)
+                    .frame(width: 24, height: 24)
+                    .background(.regularMaterial, in: Circle())
+                markdownBubble
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .foregroundStyle(.primary)
+                    .contextMenu { menuItems }
+                Spacer(minLength: 40)
+            }
+        case .system:
+            Text(message.content)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 4)
+        }
+    }
+
+    @ViewBuilder
+    private var menuItems: some View {
+        if message.role == .user {
+            Button {
+                onEdit()
+            } label: {
+                Label("Edit & Fork", systemImage: "square.and.pencil")
             }
         }
-        .contextMenu {
-            if message.role == .user {
-                Button {
-                    onEdit()
-                } label: {
-                    Label("Edit & Fork", systemImage: "square.and.pencil")
-                }
-            }
-            Button {
-                UIPasteboard.general.string = message.content
-            } label: {
-                Label("Copy", systemImage: "doc.on.doc")
-            }
+        Button {
+            UIPasteboard.general.string = message.content
+        } label: {
+            Label("Copy", systemImage: "doc.on.doc")
         }
     }
 

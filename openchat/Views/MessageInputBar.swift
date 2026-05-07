@@ -13,7 +13,14 @@ struct MessageInputBar: View {
                 .textFieldStyle(.plain)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+                .background(
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .fill(Color(.systemBackground))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .strokeBorder(Color.primary.opacity(0.12), lineWidth: 0.5)
+                )
 
             Button {
                 if isSending { onCancel() } else { onSend() }
@@ -32,6 +39,9 @@ struct MessageInputBar: View {
         .padding(.top, 8)
         .padding(.bottom, 8)
         .background(.bar)
+        .overlay(alignment: .top) {
+            Divider()
+        }
     }
 
     private var canSend: Bool {
