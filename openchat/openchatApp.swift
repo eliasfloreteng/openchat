@@ -1,32 +1,22 @@
-//
-//  openchatApp.swift
-//  openchat
-//
-//  Created by Elias Floreteng on 2026-05-07.
-//
-
 import SwiftUI
 import SwiftData
 
 @main
 struct openchatApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
+    let container: ModelContainer = {
+        let schema = Schema([Conversation.self, ChatMessage.self])
+        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            return try ModelContainer(for: schema, configurations: [config])
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            fatalError("Failed to create ModelContainer: \(error)")
         }
     }()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(container)
     }
 }
