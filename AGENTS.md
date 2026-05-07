@@ -11,3 +11,5 @@ This project is a simple iOS mobile app for an AI chat interface using OpenRoute
 - AI answers should be rendered as markdown.
 
 OpenRouter documentation is available at https://openrouter.ai/docs/llms.txt
+
+The OpenRouter OpenAPI specification is available at https://openrouter.ai/openapi.yaml and https://openrouter.ai/openapi.json
