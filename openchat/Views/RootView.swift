@@ -20,8 +20,12 @@ struct RootView: View {
         } detail: {
             if let id = selectedConversationID,
                let conversation = conversations.first(where: { $0.id == id }) {
-                ChatView(conversation: conversation, onFork: openForked)
-                    .id(conversation.id)
+                ChatView(
+                    conversation: conversation,
+                    onFork: openForked,
+                    onNewChat: newConversation
+                )
+                .id(conversation.id)
             } else {
                 EmptyChatPlaceholder(onNewChat: newConversation)
             }
@@ -31,16 +35,23 @@ struct RootView: View {
         }
         .onAppear {
             if selectedConversationID == nil {
-                selectedConversationID = conversations.first?.id
+                selectedConversationID = freshConversation().id
             }
         }
     }
 
-    private func newConversation() {
+    private func freshConversation() -> Conversation {
+        if let empty = conversations.first(where: { $0.messages.isEmpty }) {
+            return empty
+        }
         let convo = Conversation(modelId: AppSettings.shared.lastSelectedModel)
         modelContext.insert(convo)
         try? modelContext.save()
-        selectedConversationID = convo.id
+        return convo
+    }
+
+    private func newConversation() {
+        selectedConversationID = freshConversation().id
     }
 
     private func openForked(_ id: UUID) {

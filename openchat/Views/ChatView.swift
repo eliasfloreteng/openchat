@@ -4,6 +4,7 @@ import SwiftData
 struct ChatView: View {
     @Bindable var conversation: Conversation
     let onFork: (UUID) -> Void
+    let onNewChat: () -> Void
 
     @Environment(\.modelContext) private var modelContext
     @State private var draft: String = ""
@@ -79,6 +80,11 @@ struct ChatView: View {
                     .background(.regularMaterial, in: Capsule())
                 }
                 .buttonStyle(.plain)
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: onNewChat) {
+                    Label("New Chat", systemImage: "square.and.pencil")
+                }
             }
         }
         .sheet(isPresented: $showModelPicker) {
