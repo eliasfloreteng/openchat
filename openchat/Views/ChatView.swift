@@ -103,6 +103,10 @@ struct ChatView: View {
                 startStreaming()
             }
         }
+        .task(id: conversation.id) {
+            try? await Task.sleep(for: .milliseconds(50))
+            inputFocused = true
+        }
     }
 
     private func scrollToBottom(_ proxy: ScrollViewProxy) {
