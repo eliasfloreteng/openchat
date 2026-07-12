@@ -6,7 +6,17 @@ struct MessageBubbleView: View {
     let message: ChatMessage
     let onEdit: () -> Void
 
+    @State private var showSelectText = false
+
     var body: some View {
+        content
+            .sheet(isPresented: $showSelectText) {
+                SelectTextSheet(text: message.content)
+            }
+    }
+
+    @ViewBuilder
+    private var content: some View {
         switch message.role {
         case .user:
             HStack {
@@ -51,6 +61,11 @@ struct MessageBubbleView: View {
             UIPasteboard.general.string = message.content
         } label: {
             Label("Copy", systemImage: "doc.on.doc")
+        }
+        Button {
+            showSelectText = true
+        } label: {
+            Label("Select Text", systemImage: "character.cursor.ibeam")
         }
     }
 
