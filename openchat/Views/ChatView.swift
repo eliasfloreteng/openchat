@@ -14,6 +14,7 @@ struct ChatView: View {
     @State private var errorMessage: String?
     @State private var showModelPicker = false
     @State private var editingMessage: ChatMessage?
+    @State private var isNearBottom = true
     @FocusState private var inputFocused: Bool
 
     private let settings = AppSettings.shared
@@ -44,11 +45,23 @@ struct ChatView: View {
                 .padding(.bottom, 16)
             }
             .scrollDismissesKeyboard(.interactively)
+            .onScrollGeometryChange(for: Bool.self) { geometry in
+                geometry.contentOffset.y + geometry.containerSize.height
+                    >= geometry.contentSize.height + geometry.contentInsets.bottom - 100
+            } action: { _, nearBottom in
+                isNearBottom = nearBottom
+            }
             .onChange(of: conversation.messages.count) { _, _ in
-                scrollToBottom(proxy)
+                // Always follow when the user just sent a message; otherwise
+                // only if they haven't scrolled away from the bottom.
+                if conversation.orderedMessages.last?.role == .user || isNearBottom {
+                    scrollToBottom(proxy)
+                }
             }
             .onChange(of: streamingContent) { _, _ in
-                scrollToBottom(proxy)
+                if isNearBottom {
+                    scrollToBottom(proxy)
+                }
             }
         }
         .safeAreaInset(edge: .bottom) {
